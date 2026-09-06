@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Cyber Access 2050</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --bg: #05070a;
+            --card-bg: #0a0f1a;
+            --primary: #00f3ff;
+            --secondary: #0077ff;
+            --text: #e0f7ff;
+            --muted: #7aa7c7;
+            --danger: #ff3b3b;
+            --success: #00ff9d;
+            --glow: 0 0 15px rgba(0, 243, 255, 0.6),
+                0 0 30px rgba(0, 119, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg));
+            color: var(--text);
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background:
+                linear-gradient(transparent 95%, rgba(0, 243, 255, 0.06) 96%),
+                linear-gradient(90deg, transparent 95%, rgba(0, 243, 255, 0.06) 96%);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(-20%);
+            animation: gridMove 12s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: perspective(500px) rotateX(60deg) translateY(0);
+            }
+
+            100% {
+                transform: perspective(500px) rotateX(60deg) translateY(40px);
+            }
+        }
+
+        /* ---------- LOGIN CARD ---------- */
+        .login-card {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .login-card.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+        }
+
+        .inner-card {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(180deg, rgba(10, 15, 26, 0.9), rgba(5, 8, 14, 0.95));
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 16px;
+            padding: 32px 28px 28px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.6),
+                inset 0 0 30px rgba(0, 243, 255, 0.05);
+            backdrop-filter: blur(6px);
+            animation: cardEnter 0.7s ease-out;
+        }
+
+        @keyframes cardEnter {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .lock-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .cyber-lock {
+            width: 70px;
+            height: 70px;
+            border-radius: 14px;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(0, 243, 255, 0.25), transparent 60%),
+                linear-gradient(135deg, rgba(0, 119, 255, 0.2), rgba(0, 243, 255, 0.05));
+            border: 2px solid rgba(0, 243, 255, 0.5);
+            box-shadow: var(--glow);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 10px rgba(0, 243, 255, 0.5),
+                    0 0 25px rgba(0, 119, 255, 0.3);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 20px rgba(0, 243, 255, 0.8),
+                    0 0 40px rgba(0, 119, 255, 0.5);
+            }
+        }
+
+        .lock-body {
+            width: 36px;
+            height: 26px;
+            border: 3px solid #00f3ff;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+        }
+
+        .lock-shackle {
+            width: 20px;
+            height: 14px;
+            border: 3px solid #00f3ff;
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 -2px 8px rgba(0, 243, 255, 0.5);
+            animation: shackleFloat 2.2s ease-in-out infinite;
+        }
+
+        @keyframes shackleFloat {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-2px);
+            }
+        }
+
+        .lock-keyhole {
+            width: 8px;
+            height: 8px;
+            background: #00f3ff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.8);
+        }
+
+        .ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 18px;
+            border: 2px dashed rgba(0, 243, 255, 0.35);
+            animation: ringSpin 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ringSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .inner-card h1 {
+            font-size: 22px;
+            margin-bottom: 6px;
+            text-align: center;
+            color: #c9f0ff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .inner-card p.subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #9fd3ff;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            background: rgba(5, 10, 20, 0.7);
+            border: 1px solid rgba(0, 243, 255, 0.35);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow:
+                0 0 10px rgba(0, 243, 255, 0.35),
+                inset 0 0 10px rgba(0, 243, 255, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .form-group input::placeholder {
+            color: #5a7f9f;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            margin-bottom: 16px;
+            color: var(--muted);
+        }
+
+        .actions a {
+            color: #7fd9ff;
+            text-decoration: none;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .actions a:hover {
+            color: #b6f0ff;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px 14px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: #021018;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.12s ease, filter 0.2s;
+            box-shadow: 0 6px 20px rgba(0, 243, 255, 0.35);
+        }
+
+        .login-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg,
+                    transparent 20%,
+                    rgba(255, 255, 255, 0.35) 45%,
+                    rgba(255, 255, 255, 0.0) 60%);
+            transform: translateX(-120%);
+            transition: transform 0.6s ease;
+        }
+
+        .login-btn:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .login-btn:hover::before {
+            transform: translateX(120%);
+        }
+
+        .login-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .signup-link {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 16px;
+        }
+
+        .signup-link a {
+            color: #7fd9ff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .signup-link a:hover {
+            color: #b6f0ff;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.8), transparent);
+            top: -100%;
+            z-index: 2;
+            pointer-events: none;
+            animation: scan 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px rgba(0, 243, 255, 0.8));
+        }
+
+        @keyframes scan {
+            0% {
+                top: -100%;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* Auth Stick */
+        .auth-stick-wrap {
+            margin-top: 18px;
+            display: none;
+        }
+
+        .auth-stick-label {
+            font-size: 11px;
+            color: #9fd3ff;
+            margin-bottom: 6px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .auth-stick {
+            position: relative;
+            height: 10px;
+            background: rgba(0, 15, 30, 0.8);
+            border: 1px solid rgba(0, 243, 255, 0.35);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow:
+                inset 0 0 10px rgba(0, 243, 255, 0.15),
+                0 0 12px rgba(0, 243, 255, 0.25);
+        }
+
+        .auth-stick-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0%;
+            background: linear-gradient(90deg, #0077ff, #00f3ff, #7affff);
+            box-shadow:
+                0 0 15px rgba(0, 243, 255, 0.7),
+                0 0 30px rgba(0, 119, 255, 0.5);
+            transition: width 0.1s linear;
+        }
+
+        .auth-stick-glow {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0,
+                    rgba(255, 255, 255, 0) 10px,
+                    rgba(255, 255, 255, 0.25) 11px,
+                    rgba(255, 255, 255, 0.25) 12px,
+                    rgba(255, 255, 255, 0) 13px);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        .status-text {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #7fd9ff;
+            text-align: center;
+            letter-spacing: 0.4px;
+            min-height: 14px;
+        }
+
+        /* ---------- GAME-STYLE ACCESS GRANTED ANIMATION ---------- */
+        .access-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(800px 600px at 50% 40%, rgba(0, 30, 60, 0.9), rgba(2, 6, 12, 0.98));
+            z-index: 20;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .access-overlay.visible {
+            display: flex;
+            animation: overlayFadeIn 0.5s ease-out;
+        }
+
+        @keyframes overlayFadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .access-title {
+            font-size: 28px;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow:
+                0 0 10px rgba(0, 255, 157, 0.7),
+                0 0 25px rgba(0, 255, 157, 0.4);
+            margin-bottom: 10px;
+            animation: titlePulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+
+        .access-subtitle {
+            font-size: 13px;
+            color: #9fd3ff;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
+        .access-bar-wrap {
+            width: 80%;
+            max-width: 420px;
+        }
+
+        .access-bar-label {
+            font-size: 11px;
+            color: #9fd3ff;
+            margin-bottom: 6px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .access-bar {
+            position: relative;
+            height: 14px;
+            background: rgba(0, 15, 30, 0.8);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow:
+                inset 0 0 10px rgba(0, 255, 157, 0.15),
+                0 0 12px rgba(0, 255, 157, 0.25);
+        }
+
+        .access-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0%;
+            background: linear-gradient(90deg, #00b37a, #00ff9d, #7affd6);
+            box-shadow:
+                0 0 15px rgba(0, 255, 157, 0.7),
+                0 0 30px rgba(0, 255, 157, 0.5);
+            transition: width 0.08s linear;
+        }
+
+        .access-bar-glow {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(90deg,
+                    rgba(255, 255, 255, 0) 0,
+                    rgba(255, 255, 255, 0) 10px,
+                    rgba(255, 255, 255, 0.25) 11px,
+                    rgba(255, 255, 255, 0.25) 12px,
+                    rgba(255, 255, 255, 0) 13px);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        /* ---------- CYBER SECURITY WEBSITE (DASHBOARD) ---------- */
+        .cyber-site {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            background: radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg));
+            display: none;
+            overflow: auto;
+        }
+
+        .cyber-site.visible {
+            display: block;
+            animation: siteFadeIn 0.7s ease-out;
+        }
+
+        @keyframes siteFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: rgba(5, 8, 14, 0.85);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.25);
+            backdrop-filter: blur(6px);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 18px;
+            font-weight: 800;
+            color: #c9f0ff;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: 13px;
+        }
+
+        .nav-links a {
+            color: #9fd3ff;
+            text-decoration: none;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #e0f7ff;
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+        }
+
+        .site-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .hero h2 {
+            font-size: 28px;
+            color: #c9f0ff;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        }
+
+        .hero p {
+            font-size: 14px;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(10, 15, 26, 0.7), rgba(5, 8, 14, 0.85));
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(0, 243, 255, 0.04);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: #c9f0ff;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .stat {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #9fd3ff;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOGIN PAGE -->
+    <div class="login-card" id="loginCard">
+        <div class="inner-card">
+            <div class="scan-line"></div>
+
+            <div class="lock-wrapper">
+                <div class="cyber-lock">
+                    <div class="ring"></div>
+                    <div class="lock-shackle"></div>
+                    <div class="lock-body">
+                        <div class="lock-keyhole"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h1> RG SYSTEM ACCESS </h1>
+            <p class="subtitle">Next‑gen secure login</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Agent ID (Email)</label>
+                    <input type="email" id="email" name="email" placeholder="agent@cyber.com" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Access Code</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required />
+                </div>
+
+                <div class="actions">
+                    <label>
+                        <input type="checkbox" name="remember" /> Keep session
+                    </label>
+                    <a href="#">Reset code?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">LOGIN</button>
+
+                <div class="auth-stick-wrap" id="authStickWrap">
+                    <div class="auth-stick-label">Authenticating…</div>
+                    <div class="auth-stick">
+                        <div class="auth-stick-fill" id="authStickFill"></div>
+                        <div class="auth-stick-glow"></div>
+                    </div>
+                    <div class="status-text" id="statusText"></div>
+                </div>
+            </form>
+
+            <p class="signup-link">
+                New agent? <a href="#">Request access</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- GAME-STYLE ACCESS GRANTED OVERLAY -->
+    <div class="access-overlay" id="accessOverlay">
+        <div class="access-title">ACCESS GRANTED</div>
+        <div class="access-subtitle">Initializing secure dashboard…</div>
+
+        <div class="access-bar-wrap">
+            <div class="access-bar-label">Loading system</div>
+            <div class="access-bar">
+                <div class="access-bar-fill" id="accessBarFill"></div>
+                <div class="access-bar-glow"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CYBER SECURITY WEBSITE -->
+    <div class="cyber-site" id="cyberSite">
+        <header class="site-header">
+            <div class="header-inner">
+                <div class="brand">CYBER SYSTEM</div>
+                <nav class="nav-links">
+                    <a href="#">Dashboard</a>
+                    <a href="#">Threats</a>
+                    <a href="#">Logs</a>
+                    <a href="#">Settings</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="site-content">
+            <section class="hero">
+                <h2>Welcome to Cyber Shield Command</h2>
+                <p>
+                    Real‑time threat monitoring, encryption status, and agent activity – all in one secure dashboard.
+                </p>
+            </section>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Security Status</h3>
+                    <p>All systems operational. Firewall active. Encryption enabled.</p>
+                    <div class="stat-row">
+                        <div class="stat">
+                            <div class="stat-value">98%</div>
+                            <div class="stat-label">Secure</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Threats blocked</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Agent Activity</h3>
+                    <p>Live sessions, login attempts, and access logs for all agents.</p>
+                    <div class="stat-row">
+                        <div class="stat">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Active agents</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">148</div>
+                            <div class="stat-label">Logins today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Encryption</h3>
+                    <p>All data channels encrypted with next‑gen protocols.</p>
+                    <div class="stat-row">
+                        <div class="stat">
+                            <div class="stat-value">AES‑256</div>
+                            <div class="stat-label">Algorithm</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">ON</div>
+                            <div class="stat-label">Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                © RG Cyber Shield – Secure by design.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const authStickWrap = document.getElementById('authStickWrap');
+        const authStickFill = document.getElementById('authStickFill');
+        const statusText = document.getElementById('statusText');
+
+        const loginCard = document.getElementById('loginCard');
+        const accessOverlay = document.getElementById('accessOverlay');
+        const accessBarFill = document.getElementById('accessBarFill');
+        const cyberSite = document.getElementById('cyberSite');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email) {
+                alert('Enter your Agent ID (email).');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Access code must be at least 6 characters.');
+                return;
+            }
+
+            // Start auth animation
+            loginBtn.disabled = true;
+            loginBtn.style.opacity = 0.7;
+            loginBtn.textContent = 'AUTHENTICATING…';
+
+            authStickWrap.style.display = 'block';
+            authStickFill.style.width = '0%';
+            statusText.textContent = 'Initializing secure channel…';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 7 + 3;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+
+                    authStickFill.style.width = '100%';
+                    statusText.textContent = 'Access granted. Welcome, agent.';
+                    loginBtn.textContent = 'ACCESS GRANTED';
+
+                    // Show game-style overlay
+                    setTimeout(() => {
+                        loginCard.classList.add('hidden');
+                        accessOverlay.classList.add('visible');
+
+                        // Animate access bar
+                        let p = 0;
+                        const barInt = setInterval(() => {
+                            p += Math.random() * 8 + 4;
+                            if (p >= 100) {
+                                p = 100;
+                                clearInterval(barInt);
+                                accessBarFill.style.width = '100%';
+
+                                // Open cyber security website
+                                setTimeout(() => {
+                                    accessOverlay.style.display = 'none';
+                                    cyberSite.classList.add('visible');
+                                }, 600);
+                            } else {
+                                accessBarFill.style.width = p + '%';
+                            }
+                        }, 100);
+                    }, 500);
+                } else {
+                    authStickFill.style.width = progress + '%';
+                    if (progress < 30) {
+                        statusText.textContent = 'Encrypting credentials…';
+                    } else if (progress < 70) {
+                        statusText.textContent = 'Verifying with central server…';
+                    } else {
+                        statusText.textContent = 'Finalizing session…';
+                    }
+                }
+            }, 120);
+        });
+    </script>
+</body>
+
+</html>
